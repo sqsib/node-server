@@ -1,0 +1,14 @@
+{
+  "name": "node-api",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "*",
+    "express": "*",
+    "mongodb": "^2.2.26",
+    "mongoose": "*",
+    "password-hash": "*"
+  },
+  "engines": {
+    "node":"6.10.1"
+  }
+}
