@@ -89,9 +89,22 @@ router.put('/addfriend', function(req, res, next) {
       });
       res.send(user2);
       return;
-    })
+    });
   });
 
+});
+
+router.get('/user/:name', function(req, res){
+  User.findOne({name: req.params.name}, function(err, user) {
+    if(err) throw err;
+    if(!user) {
+      res.send({success: false, message: 'User not found'});
+      return;
+    } else {
+      res.send(user);
+      return;
+    }
+  });
 });
 
 router.post('/check', function(req, res) {
