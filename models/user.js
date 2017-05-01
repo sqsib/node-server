@@ -10,7 +10,8 @@ var UserSchema = new Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  friends: [String],
 });
 
 module.exports = mongoose.model('User', UserSchema);

@@ -48,6 +48,77 @@ router.route('/register').post(function(req, res) {
 
 });
 
+router.put('/addfriend', function(req, res) {
+  var user_name = req.body.name;
+  var friend_to_add = req.body.friend
+  var friend_found = false;
+  var friend_found_user = null;
+  //first find if the friend to add exists
+  User.findOne({
+    name: user_name
+  }, function(err, user) {
+    if(err) throw err;
+
+    if(!user) {
+      return res.send({success: false, message:"the user_name does not exist"})
+    }
+  });
+
+
+
+  User.findOne({
+    name: friend_to_add
+  }, function(err, user) {
+    if(err) throw err;
+
+    if(!user) {
+      return res.send({success: false, message: "this user you are trying to add not found"});
+    }
+    else {
+
+      var isInArray = user.friends.some(function (friend) {
+        return friend == user_name;
+      })
+
+      if(!isInArray) {
+        user.friends.push(user_name);
+        user.save(function(err) {
+          if(err)
+             res.send({success: false, message: 'something went wrong'});
+
+
+        });
+      }
+      else {
+        return res.send({success: false, message:"already your friend"})
+      }
+    }
+  });
+
+  User.findOne({
+    name: user_name
+  }, function(err, user) {
+    if(err) throw err;
+
+    if(!user) {
+      res.send({success: false, message: "user_name parameter wrong, "});
+    }
+    else {
+
+      user.friends.push(friend_to_add);
+      user.save(function(err) {
+        if(err)
+          return res.json({success: false, message: 'something went wrong'});
+        return res.send(user)
+
+      });
+
+    }
+  });
+
+
+});
+
 router.post('/check', function(req, res) {
   User.findOne({
     name: req.body.name
@@ -70,7 +141,9 @@ router.post('/check', function(req, res) {
   });
 });
 
-//all routes will be prefixed with /api
+
+
+//all routes will be prefixed with /login
 app.use('/login', router);
 
 //start
