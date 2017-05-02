@@ -9,6 +9,6 @@
     "password-hash": "*"
   },
   "engines": {
-    "node":"6.10.1"
+    "node":"*"
   }
 }
