@@ -64,30 +64,30 @@ router.post('/addfriend', function(req, res, next) {
   var friend_found = false;
 
 
-   User.findOne({name: friend_to_add}, function(err,user) {
+   User.find({name: friend_to_add}, function(err,user) {
     if(err) console.log(err);
-    if(!user) {
+    if(!user[0]) {
       console.log('error');
       res.send({success: false, message: 'friend to add not found'});
       return;
     }
-    var isInArray = user.friends.some(function(friend) {
+    var isInArray = user[0].friends.some(function(friend) {
       return (friend == user_name);
     });
     if(isInArray) {
       res.send({success: false, message:'already friends'});
       return;
     }
-    user.friends.push(user_name);
-    user.save(function(err){
+    user[0].friends.push(user_name);
+    user[0].save(function(err){
       if(err)  console.log(err);
     });
-    User.findOne(user_name, function(err, user2) {
-      user2.friends.push(friend_to_add);
-      user2.save(function(err) {
+    User.find(user_name, function(err, user2) {
+      user2[0].friends.push(friend_to_add);
+      user2[0].save(function(err) {
         if(err) console.log(err);
       });
-      res.send(user2);
+      res.send(user2[0]);
       return;
     });
   });
