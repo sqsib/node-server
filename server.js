@@ -57,12 +57,54 @@ function findUser(name, callback) {
   });
 };
 
-
-router.post('/addfriend', function(req, res, next) {
+router.post('/removefriend', function(req, res) {
   var user_name = req.body.name;
-  var friend_to_add = req.body.friend
+  var friend_to_remove = req.body.friend;
   var friend_found = false;
 
+  if(user_name == friend_to_remove) {
+    res.send({success: false, message: 'You cannot remove yourself'});
+    return;
+  }
+
+  User.find({name: friend_to_remove}, function(err,user) {
+   if(err) console.log(err);
+   if(!user[0]) {
+     console.log('error');
+     res.send({success: false, message: 'friend to remove not found'});
+     return;
+   }
+   var isInArray = user[0].friends.some(function(friend) {
+     return (friend == user_name);
+   });
+   if(!isInArray) {
+     res.send({success: false, message:'you are not friends with this user'});
+     return;
+   }
+   user[0].friends.pull(user_name);
+   user[0].save(function(err){
+     if(err)  console.log(err);
+   });
+   User.find({name: user_name}, function(err, user2) {
+     user2[0].friends.pull(friend_to_remove);
+     user2[0].save(function(err) {
+       if(err) console.log(err);
+     });
+     res.send(user2[0]);
+     return;
+   });
+ });
+
+});
+router.post('/addfriend', function(req, res, next) {
+  var user_name = req.body.name;
+  var friend_to_add = req.body.friend;
+  var friend_found = false;
+
+  if(user_name == friend_to_add) {
+    res.send({success: false, message: 'You cannot add yourself'});
+    return;
+  }
 
    User.find({name: friend_to_add}, function(err,user) {
     if(err) console.log(err);
@@ -78,21 +120,28 @@ router.post('/addfriend', function(req, res, next) {
       res.send({success: false, message:'already friends'});
       return;
     }
+    console.log('Pushing friend');
+    console.log('friend name ' + user[0].name);
     user[0].friends.push(user_name);
     user[0].save(function(err){
       if(err)  console.log(err);
     });
-    User.find(user_name, function(err, user2) {
-      user2[0].friends.push(friend_to_add);
-      user2[0].save(function(err) {
-        if(err) console.log(err);
-      });
-      res.send(user2[0]);
-      return;
-    });
   });
-
+  User.find({name: user_name}, function(err, user2) {
+    if(err) console.log(err);
+    //console.log(user2.toString());
+    console.log('Pushing user');
+    console.log('user name ' + user2[0].name);
+    user2[0].friends.push(friend_to_add);
+    user2[0].save(function(err) {
+      if(err) console.log(err);
+    });
+    res.send(user2[0]);
+    return;
+  });
 });
+
+
 
 router.get('/user/:name', function(req, res){
   User.findOne({name: req.params.name}, function(err, user) {
@@ -128,6 +177,8 @@ router.post('/check', function(req, res) {
     }
   });
 });
+
+
 
 
 
