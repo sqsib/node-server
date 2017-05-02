@@ -65,7 +65,7 @@ router.put('/addfriend', function(req, res, next) {
 
 
    User.findOne({name: friend_to_add}, function(err,user) {
-    if(err) throw err;
+    if(err) console.log(err);
     if(!user) {
       console.log('error');
       res.send({success: false, message: 'friend to add not found'});
@@ -80,12 +80,12 @@ router.put('/addfriend', function(req, res, next) {
     }
     user.friends.push(user_name);
     user.save(function(err){
-      if(err) throw err;
+      if(err)  console.log(err);
     });
     User.findOne(user_name, function(err, user2) {
       user2.friends.push(friend_to_add);
       user2.save(function(err) {
-        if(err) throw err;
+        if(err) console.log(err);
       });
       res.send(user2);
       return;
