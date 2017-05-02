@@ -58,7 +58,7 @@ function findUser(name, callback) {
 };
 
 
-router.put('/addfriend', function(req, res, next) {
+router.post('/addfriend', function(req, res, next) {
   var user_name = req.body.name;
   var friend_to_add = req.body.friend
   var friend_found = false;
