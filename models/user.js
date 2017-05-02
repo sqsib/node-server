@@ -12,6 +12,10 @@ var UserSchema = new Schema({
     required: true
   },
   friends: [String],
+  online: {
+    type: Boolean,
+    default: false
+  },
 });
 
 module.exports = mongoose.model('User', UserSchema);
