@@ -16,6 +16,8 @@ var UserSchema = new Schema({
     type: Boolean,
     default: false
   },
+  location: [Number, Number],
+  
 });
 
 module.exports = mongoose.model('User', UserSchema);
