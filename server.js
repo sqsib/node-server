@@ -141,7 +141,43 @@ router.post('/addfriend', function(req, res, next) {
   });
 });
 
+router.post('/updatestatus', function(req, res) {
+  User.findOne({name: req.body.name}, function(err, user) {
+    if(err) throw err;
+    if(!user) {
+      res.send({success: false, message: 'User not found'});
+      return;
+    }
+    else {
+      user.online = req.body.status;
+      user.save(function(err) {
+        if(err) throw err;
+        res.send(user);
+        return;
+      });
+    }
+    });
+  });
 
+router.post('/updatelocation', function(req, res) {
+  User.findOne({name: req.body.name}, function(err, user) {
+    if(err) throw err;
+    if(!user) {
+      res.send({success: false, message: 'User not found'});
+      return;
+    } else {
+      user.location.lat = req.body.lat;
+      user.location.long = req.body.long;
+
+      user.save(function(err) {
+        if(err) console.log(err);
+      });
+      res.send(user);
+      return;
+    }
+  });
+
+});
 
 router.get('/user/:name', function(req, res){
   User.findOne({name: req.params.name}, function(err, user) {

@@ -16,8 +16,11 @@ var UserSchema = new Schema({
     type: Boolean,
     default: false
   },
-  location: [Number, Number],
-  
+  location: {
+    lat: Number,
+    long: Number,
+  }
+
 });
 
 module.exports = mongoose.model('User', UserSchema);
