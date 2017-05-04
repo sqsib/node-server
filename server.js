@@ -158,7 +158,19 @@ router.post('/updatestatus', function(req, res) {
     }
     });
   });
+router.post('/getcoord', function(req, res) {
+  User.findOne({name: req.body.name}, function(err, user) {
+    if(err) throw err;
+    if(!user){
+      res.send({success: false, message: 'User not found'});
+      return;
+    } else {
+      res.send({lat: user.location.lat, long: user.location.long});
+      return;
+    }
 
+  });
+});
 router.post('/updatelocation', function(req, res) {
   User.findOne({name: req.body.name}, function(err, user) {
     if(err) throw err;
